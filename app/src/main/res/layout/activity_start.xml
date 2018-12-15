@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="福笑い\nこの画像を完成させてみよう！"
-            android:textSize="25sp"
+            android:textSize="50sp"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -21,21 +21,23 @@
             app:layout_constraintVertical_bias="0.2"/>
 
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
+            android:id="@+id/imageView"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:src="@drawable/full_face"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.23" android:id="@+id/imageView"/>
+            app:layout_constraintVertical_bias="0.23"/>
 
     <Button
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="スタート !"
-            android:textSize="25sp"
+            android:textSize="50sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

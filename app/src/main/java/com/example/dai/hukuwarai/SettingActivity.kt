@@ -14,7 +14,7 @@ class SettingActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("UdpSetting", Context.MODE_PRIVATE)
 
         val ip = sharedPreferences.getString("ip", "")
-        val port = sharedPreferences.getString("port", "10000")
+        val port = sharedPreferences.getString("port", "")
 
         ip?.let { edit_ip.setText(ip) }
         port?.let { edit_port.setText(port) }

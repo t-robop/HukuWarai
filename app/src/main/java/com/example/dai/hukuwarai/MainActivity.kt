@@ -2,6 +2,7 @@ package com.example.dai.hukuwarai
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -16,10 +17,13 @@ class MainActivity : AppCompatActivity() {
     private val udp = Udp()
     private lateinit var ip: String
     private var port: Int = 0
+    private lateinit var vibrator: Vibrator
+    private var restartVibrateFlag = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
         ip = intent.getStringExtra(StartActivity.INTENT_KEY_IP)
         port = intent.getStringExtra(StartActivity.INTENT_KEY_PORT).toInt()
@@ -29,22 +33,28 @@ class MainActivity : AppCompatActivity() {
         udp.udpSend(ip, port, "state$stateNum")
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        val x = event?.x
-        val y = event?.y
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val x = event.x
+        val y = event.y
         val position = "$x:$y:"
         Log.d("TouchEvent", position)
 
-        when (event?.action) {
-            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                vibrator.vibrate(longArrayOf(0, 500), 0)
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                helpVibrate(x, y, stateNum)
                 intervalTime++
-                if (intervalTime == 3) {
+                if (intervalTime == 3) {  //リスナーのリアルタイム取得毎にUDP通信すると重すぎて落ちるので、3カウンタで間引いている
                     udp.udpSend(ip, port, position)
                     intervalTime = 0
                 }
             }
 
-            MotionEvent.ACTION_UP -> {
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                vibrator.cancel()
                 if (stateNum == maxStateNum) {
                     udp.udpSend(ip, port, "end")
                     stateNum = 0
@@ -73,13 +83,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showGuideDialog(state: Int){
+    private fun showGuideDialog(state: Int) {
         val builder = AlertDialog.Builder(this)
         val view = layoutInflater.inflate(R.layout.lead_parts_dialog, null)
         builder.setView(view)
-        view.next_header_text.text = "ステップ ${state+1} / ${maxStateNum+1}"
+        view.next_header_text.text = "ステップ ${state + 1} / ${maxStateNum + 1}"
 
-        when(state){
+        when (state) {
             0 -> {
                 view.next_description_text.text = "左目の位置を決めよう！"
                 view.next_parts_image.setImageResource(R.drawable.left_eye)
@@ -105,13 +115,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         builder.setCancelable(true)
         val alertDialog = builder.create()
         alertDialog.show()
 
         view.next_button.setOnClickListener {
             alertDialog.cancel()
+        }
+    }
+
+    // 動かしているパーツが正解の座標値よりも大きく外れた場合にバイブレーションする
+    private fun helpVibrate(x: Float, y: Float, state: Int) {
+        val margin = 100
+        var currentX = 0.0
+        var currentY = 0.0
+
+        when (state) {
+            0 -> {  //左目
+                currentX = 247.0
+                currentY = 508.0
+            }
+            1 -> {  //右目
+                currentX = 543.0
+                currentY = 506.0
+            }
+            2 -> {  //鼻
+                currentX = 373.0
+                currentY = 605.0
+            }
+            3 -> {  //口
+                currentX = 361.0
+                currentY = 854.0
+            }
+        }
+
+        if ((x < currentX + margin && x > currentX - margin) && (y < currentY + margin && y > currentY - margin)) {
+            vibrator.cancel()
+            restartVibrateFlag = true
+        } else {
+            if(restartVibrateFlag){
+                vibrator.vibrate(longArrayOf(0, 500), 0)
+                restartVibrateFlag = false
+            }
         }
     }
 }

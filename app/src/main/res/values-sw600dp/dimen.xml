@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- common -->
+    <dimen name="text_size">40sp</dimen>
+    <dimen name="button_padding">15dp</dimen>
+    <dimen name="custom_dialog_padding">24dp</dimen>
+
+    <!-- activity_start.xml -->
+    <dimen name="activity_start_image_width">300dp</dimen>
+    <dimen name="activity_start_image_height">400dp</dimen>
+
+    <!-- lead_parts_dialog.xml -->
+    <dimen name="lead_parts_dialog_vertical_margin">24dp</dimen>
+</resources>

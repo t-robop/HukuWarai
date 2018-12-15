@@ -43,6 +43,10 @@ class StartActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
+            android.R.id.home -> {
+                finish()
+            }
+
             R.id.setting -> {
                 val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)

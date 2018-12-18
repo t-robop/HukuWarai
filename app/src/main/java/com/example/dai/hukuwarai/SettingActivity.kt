@@ -1,8 +1,8 @@
 package com.example.dai.hukuwarai
 
 import android.content.Context
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_setting.*
 
 class SettingActivity : AppCompatActivity() {
@@ -21,9 +21,9 @@ class SettingActivity : AppCompatActivity() {
 
         save_setting.setOnClickListener {
             val ipText = edit_ip.text.toString()
-            val portText= edit_port.text.toString()
+            val portText = edit_port.text.toString()
 
-            if (ipText.isNotEmpty() && portText.isNotEmpty()){
+            if (ipText.isNotEmpty() && portText.isNotEmpty()) {
                 val editor = sharedPreferences.edit()
                 editor.putString("ip", ipText)
                 editor.putString("port", portText)

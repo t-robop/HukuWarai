@@ -7,6 +7,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.Button
+import android.widget.TextView
 import kotlinx.android.synthetic.main.lead_parts_dialog.view.*
 
 class MainActivity : AppCompatActivity() {
@@ -71,15 +73,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showNextSceneDialog() {
-        AlertDialog.Builder(this).apply {
-            setTitle("次に進みますか？")
+        val builder = AlertDialog.Builder(this).apply {
+            setMessage("次に進みますか？")
             setPositiveButton("OK") { _, _ ->
                 stateNum++
                 showGuideDialog(stateNum)
                 udp.udpSend(ip, port, "state$stateNum")
             }
             setNegativeButton("もう一度", null)
-            show()
+        }
+
+        val dialog = builder.show()
+
+        dialog.findViewById<TextView>(android.R.id.message).apply {
+            this!!.textSize = 30.0f
+        }
+        dialog.findViewById<Button>(android.R.id.button1).apply {
+            this!!.textSize = 25.0f
+            this.setPadding(30, 20, 20, 20)
+        }
+
+        dialog.findViewById<Button>(android.R.id.button2).apply {
+            this!!.textSize = 25.0f
+            this.setPadding(20, 20, 30, 20)
         }
     }
 
@@ -152,10 +168,12 @@ class MainActivity : AppCompatActivity() {
         if ((x < currentX + margin && x > currentX - margin) && (y < currentY + margin && y > currentY - margin)) {
             vibrator.cancel()
             restartVibrateFlag = true
+            //TODO 動かしているパーツの非表示
         } else {
-            if(restartVibrateFlag){
+            if (restartVibrateFlag) {
                 vibrator.vibrate(longArrayOf(0, 500), 0)
                 restartVibrateFlag = false
+                //TODO 動かしているパーツの表示
             }
         }
     }
